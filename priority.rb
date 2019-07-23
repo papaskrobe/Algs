@@ -5,7 +5,9 @@ class PriorityQueue
 	end
 
 	def insert(x)
-		
+		@queue.push(x)
+		@queue[0] += 1
+		float(@queue[0])
 	end
 
 	def max
@@ -17,23 +19,67 @@ class PriorityQueue
 	end
 	
 	def delMax
-		if @queue[0] = 0 then
+		if @queue[0] == 0 then
 			return nil
 		else
-			#CODE
+			swap(1, @queue[0])
+			out = @queue.pop
+			sink(1)
+			@queue[0] -= 1
+			return out
 		end
 	end
 	
 	def float(pointer)
-		
+		while @comparitor.call(@queue[pointer], @queue[pointer >> 1]) > 0  && pointer > 1 do
+			swap(pointer, pointer >> 1)
+			pointer = (pointer >> 1)
+		end
 	end
 	
 	def sink(pointer)
-		
+		while true do
+			if ((pointer << 1) > @queue[0]) then
+				break
+			elsif ((pointer << 1) == @queue[0]) then
+				if @comparitor.call(pointer, pointer << 1) < 1 then
+					swap(pointer, pointer << 1)
+				end
+				break
+			else
+				if @comparitor.call(@queue[pointer], @queue[pointer << 1]) > 0 && 
+					@comparitor.call(@queue[pointer << 1], @queue[(pointer << 1) + 1]) > 0 then
+					swap(pointer, pointer << 1)
+					pointer = pointer << 1
+				elsif @comparitor.call(@queue[pointer], @queue[pointer << 1]) > 0 && 
+					@comparitor.call(@queue[pointer << 1], @queue[(pointer << 1) + 1]) < 0 then
+					swap(pointer, (pointer << 1) + 1)
+					pointer = (pointer << 1 + 1)
+				else
+					break
+				end	
+			end
+		end
+		return
 	end
 	
 	def swap(pointer1, pointer2)
-	
+		temp = @queue[pointer1]
+		@queue[pointer1] = @queue[pointer2]
+		@queue[pointer2] = temp
 	end
 
+	attr_reader :queue
 end
+
+x = PriorityQueue.new
+x.insert(8)
+x.insert(6)
+x.insert(7)
+x.insert(5)
+x.insert(3)
+x.insert(0)
+x.insert(9)
+p x.queue
+p x.delMax
+p x.queue
