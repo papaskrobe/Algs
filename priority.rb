@@ -18,6 +18,10 @@ class PriorityQueue
 		end
 	end
 	
+	attr_reader :queue
+
+	private
+	
 	def delMax
 		if @queue[0] == 0 then
 			return nil
@@ -69,17 +73,4 @@ class PriorityQueue
 		@queue[pointer2] = temp
 	end
 
-	attr_reader :queue
 end
-
-x = PriorityQueue.new
-x.insert(8)
-x.insert(6)
-x.insert(7)
-x.insert(5)
-x.insert(3)
-x.insert(0)
-x.insert(9)
-p x.queue
-p x.delMax
-p x.queue

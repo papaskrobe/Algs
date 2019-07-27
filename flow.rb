@@ -23,7 +23,7 @@ class FlowEdge
 	end
 	
 	def to_s
-		return "#{from}->#{to}: #{flow}/#{volume}"
+		return "#{from} -> #{to}: #{flow}/#{volume}"
 	end
 	
 	attr_reader :from, :to, :volume
@@ -37,15 +37,26 @@ class FlowGraph
 	end
 	
 	def add(edge)
-		@graph[edge.to].push(edge)
-		@graph[edge.from].push(edge)
+		if (((edge.to < 0) || (edge.from < 0)) || ((edge.to >= @size) || (edge.from >= @size))) then
+			raise "Edge index out of range"
+		else
+			@graph[edge.to].push(edge)
+			@graph[edge.from].push(edge)
+		end
 	end
 	
 	def adj(v)
-		return @graph[v]
+		if ((v >= @size) || (v < 0)) then
+			raise "Index #{v} out of range"
+		else
+			return @graph[v]
+		end
 	end
 	
 	def residual(from, to)
+		if (((to < 0) || (from < 0)) || ((to >= @size) || (from >= @size))) then
+			raise "Edge index out of range"
+		end
 		@graph[from].each do |e|
 			if e.to == to then
 				return e.residual(to)
@@ -56,12 +67,21 @@ class FlowGraph
 	end
 	
 	def flow(from, to, volume)
+		if (((to < 0) || (from < 0)) || ((to >= @size) || (from >= @size))) then
+			raise "Edge index out of range"
+		end
 		@graph[from].each do |e| 
 			if e.to == to then
 				e.flow -= volume
+				if e.flow < 0 then
+					raise "Flow for edge can not be negative"
+				end
 				break
 			elsif e.from == to then
 				e.flow += volume
+				if e.flow > e.volume then
+					raise "Flow for edge can not be higher than volume"
+				end
 				break
 			end
 		end
@@ -128,28 +148,5 @@ class FordFulkerson
 		return @visited[t]
 	end
 	
-	attr_reader :pathTo, :visited
+	attr_reader :pathTo
 end
-
-graph = FlowGraph.new(4)
-
-graph.add(FlowEdge.new(0, 1, 10))
-graph.add(FlowEdge.new(0, 2, 5))
-graph.add(FlowEdge.new(1, 2, 15))
-graph.add(FlowEdge.new(1, 3, 5))
-graph.add(FlowEdge.new(2, 3, 10))
-
-ff = FordFulkerson.new(graph, 0, 3)
-graph.show
-
-
-
-
-
-
-
-
-
-
-
-

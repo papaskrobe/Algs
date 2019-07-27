@@ -5,6 +5,10 @@ class Edge
 		@weight = weight
 	end
 	
+	def to_s
+		return "#{@from} -> #{@to}: #{@weight}"
+	end
+	
 	attr_reader :from, :to, :weight
 end
 
@@ -15,12 +19,20 @@ class Digraph
 	end
 	
 	def add(edge)
-		@graph[edge.from].delete_if { |x| x.to == edge.to }
-		@graph[edge.from].push(edge)
+		if (((edge.to < 0) || (edge.from < 0)) || ((edge.to >= @size) || (edge.from >= @size))) then
+			raise "Edge index out of range"
+		else
+			@graph[edge.from].delete_if { |x| x.to == edge.to }
+			@graph[edge.from].push(edge)
+		end
 	end
 	
-	def adj(edge)
-		return @graph[edge]
+	def adj(v)
+		if ((v >= @size) || (v < 0)) then
+			raise "Index #{v} out of range"
+		else
+			return @graph[v]
+		end
 	end
 	
 	attr_reader :size
@@ -28,6 +40,9 @@ end
 
 class DijkstraSP
 	def initialize(graph, source=0)
+		if ((source < 0) || (source >= graph.size)) then
+			raise "Source #{source} out of range"
+		end
 		@graph = graph
 		@visited = [false] * graph.size
 		@distTo = [Float::INFINITY] * graph.size
@@ -60,6 +75,9 @@ end
 
 class BellmanFordSP
 	def initialize(graph, source=0)
+		if ((source < 0) || (source >= graph.size)) then
+			raise "Source #{source} out of range"
+		end
 		@graph = graph
 		@visited = [false] * graph.size
 		@distTo = [Float::INFINITY] * graph.size
@@ -80,27 +98,3 @@ class BellmanFordSP
 	
 	attr_reader :distTo, :pathTo
 end
-
-=begin
-graph = Digraph.new(7)
-graph.add(Edge.new(1, 2, 7))
-graph.add(Edge.new(1, 3, 9))
-graph.add(Edge.new(1, 6, 14))
-graph.add(Edge.new(2, 4, 15))
-graph.add(Edge.new(2, 3, 10))
-graph.add(Edge.new(3, 4, 11))
-graph.add(Edge.new(3, 6, 2))
-graph.add(Edge.new(6, 5, 9))
-graph.add(Edge.new(4, 4, 6))
-=end
-graph = Digraph.new(5)
-graph.add(Edge.new(0,1,2))
-graph.add(Edge.new(0,3,6))
-graph.add(Edge.new(1,2,1))
-graph.add(Edge.new(2,3,1))
-graph.add(Edge.new(3,4,2))
-
-dij = DijkstraSP.new(graph, 0)
-p dij.distTo
-bf = BellmanFordSP.new(graph, 0)
-p bf.distTo

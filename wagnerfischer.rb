@@ -17,5 +17,3 @@ def edit_distance(str1, str3)
 	end
 	return d[str1.length()][str3.length()]
 end
-
-puts edit_distance("brings", "string")
