@@ -1,3 +1,5 @@
+require_relative "priority.rb"
+
 class Edge
 	def initialize(from, to, weight)
 		@from = from
@@ -49,24 +51,25 @@ class DijkstraSP
 		@pathTo = [-1] * graph.size
 		@distTo[source] = 0
 		@pathTo[source] = source
-		queue = [source] 
+		queue = PriorityQueue.new(Proc.new { |x, y| @distTo[y] <=> @distTo[x] })
+		queue.insert(source)
 		node = nil
 		while queue.size > 0 do
-			queue.sort! { |x,y| @distTo[x] <=> @distTo[y] } # Hackish; should use proper priority queue
-			loop do
-				node = queue.shift
+			while node = queue.delMax
 				if !(@visited[node]) then break end
 			end
+			if node then
 				@graph.adj(node).each do |edge|
-				if !(@visited[edge.to]) then
-					queue.push(edge.to)
+					if !(@visited[edge.to]) then
+						queue.insert(edge.to)
+					end
+					if @distTo[node] + edge.weight < @distTo[edge.to] then
+						@pathTo[edge.to] = node
+						@distTo[edge.to] = @distTo[node] + edge.weight
+					end
 				end
-				if @distTo[node] + edge.weight < @distTo[edge.to] then
-					@pathTo[edge.to] = node
-					@distTo[edge.to] = @distTo[node] + edge.weight
-				end
+				@visited[node] = true
 			end
-			@visited[node] = true
 		end
 	end
 	

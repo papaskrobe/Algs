@@ -18,10 +18,6 @@ class PriorityQueue
 		end
 	end
 	
-	attr_reader :queue
-
-	private
-	
 	def delMax
 		if @queue[0] == 0 then
 			return nil
@@ -33,6 +29,14 @@ class PriorityQueue
 			return out
 		end
 	end
+	
+	def size
+		return @queue[0]
+	end
+	
+	attr_reader :queue
+
+	private
 	
 	def float(pointer)
 		while @comparitor.call(@queue[pointer], @queue[pointer >> 1]) > 0  && pointer > 1 do
