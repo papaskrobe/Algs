@@ -5,7 +5,7 @@ class UnionFind
 	end
 	
 	def root(n)
-		if ((n < 0) || (n >= @size)) then
+		if ((n < 0) || (n >= @sizes.length)) then
 			raise "Index #{n} outside of range"
 		end
 		while @node[n] != n do
@@ -15,8 +15,8 @@ class UnionFind
 		return n
 	end
 	
-	def union(n, m)
-	if (((n < 0) || (m < 0)) || ((n >= @size) || (m >= @size))) then
+	def join(n, m)
+	if (((n < 0) || (m < 0)) || ((n >= @sizes.length) || (m >= @sizes.length))) then
 		raise "Index outside of range"
 	end
 		if @sizes[n] <= @sizes[m] then
@@ -26,8 +26,8 @@ class UnionFind
 		end
 	end
 	
-	def connected(n, m)
-		if (((n < 0) || (m < 0)) || ((n >= @size) || (m >= @size))) then
+	def connected?(n, m)
+		if (((n < 0) || (m < 0)) || ((n >= @sizes.length) || (m >= @sizes.length))) then
 			raise "Index outside of range"
 		end
 		return root(n) == root(m)

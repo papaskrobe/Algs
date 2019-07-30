@@ -1,4 +1,5 @@
 require_relative "priority.rb"
+require_relative "union.rb"
 
 class Edge
 	def initialize(from, to, weight)
@@ -100,4 +101,26 @@ class BellmanFordSP
 	end
 	
 	attr_reader :distTo, :pathTo
+end
+
+class KruskalMST
+	def initialize(graph)
+		@mst = []
+		union = UnionFind.new(graph.size)
+		edges = []
+		graph.size.times do |v|
+			graph.adj(v).each do |e|
+				edges += [e]
+			end
+		end
+		edges.sort { |x, y| y.weight <=> x.weight }
+		edges.each do |e|
+			if !union.connected?(e.from, e.to) then
+				@mst += [e]
+				union.join(e.from, e.to)
+			end
+		end
+	end
+	
+	attr_reader :mst
 end
