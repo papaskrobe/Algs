@@ -64,6 +64,7 @@ class FlowGraph
 				return e.residual(from)
 			end
 		end
+		return nil
 	end
 	
 	def flow(from, to, volume)
