@@ -113,14 +113,14 @@ class KruskalMST
 				edges += [e]
 			end
 		end
-		edges.sort { |x, y| y.weight <=> x.weight }
+		edges.sort! { |x, y| x.weight <=> y.weight }
 		edges.each do |e|
 			if !union.connected?(e.from, e.to) then
 				@mst += [e]
 				union.join(e.from, e.to)
 			end
 		end
+		@sum = @mst.collect { |e| e.weight }.inject(:+)
 	end
-	
-	attr_reader :mst
+	attr_reader :mst, :sum
 end
