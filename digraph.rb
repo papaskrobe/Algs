@@ -1,7 +1,6 @@
 require_relative "priority.rb"
-require_relative "union.rb"
 
-class Edge
+class DiEdge
 	def initialize(from, to, weight)
 		@from = from
 		@to = to
@@ -27,6 +26,14 @@ class Digraph
 		else
 			@graph[edge.from].delete_if { |x| x.to == edge.to }
 			@graph[edge.from].push(edge)
+		end
+	end
+	
+	def add_edge(f, t, w)
+		if ((f < 0) || (t < 0)) || ((f >= @size) || (t >= @size)) then
+			raise "Edge index out of range"
+		else
+			self.add(DiEdge.new(f, t, w))
 		end
 	end
 	
@@ -103,24 +110,4 @@ class BellmanFordSP
 	attr_reader :distTo, :pathTo
 end
 
-class KruskalMST
-	def initialize(graph)
-		@mst = []
-		union = UnionFind.new(graph.size)
-		edges = []
-		graph.size.times do |v|
-			graph.adj(v).each do |e|
-				edges += [e]
-			end
-		end
-		edges.sort! { |x, y| x.weight <=> y.weight }
-		edges.each do |e|
-			if !union.connected?(e.from, e.to) then
-				@mst += [e]
-				union.join(e.from, e.to)
-			end
-		end
-		@sum = @mst.collect { |e| e.weight }.inject(:+)
-	end
-	attr_reader :mst, :sum
-end
+
