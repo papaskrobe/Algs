@@ -1,2 +1,2 @@
 # Algs
-Basic graph and supporting algorithms in Ruby
+Basic graph, tree, and supporting algorithms in Ruby
