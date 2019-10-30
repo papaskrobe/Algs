@@ -24,8 +24,8 @@ class PriorityQueue
 		else
 			swap(1, @queue[0])
 			out = @queue.pop
-			sink(1)
 			@queue[0] -= 1
+			sink(1)
 			return out
 		end
 	end
@@ -39,7 +39,7 @@ class PriorityQueue
 	private
 	
 	def float(pointer)
-		while @comparitor.call(@queue[pointer], @queue[pointer >> 1]) > 0  && pointer > 1 do
+		while pointer > 1 && compare(pointer, pointer >> 1) > 0 do
 			swap(pointer, pointer >> 1)
 			pointer = (pointer >> 1)
 		end
@@ -50,17 +50,16 @@ class PriorityQueue
 			if ((pointer << 1) > @queue[0]) then
 				break
 			elsif ((pointer << 1) == @queue[0]) then
-				if @comparitor.call(pointer, pointer << 1) < 1 then
+
+				if compare(pointer, pointer << 1) < 0 then
 					swap(pointer, pointer << 1)
 				end
 				break
 			else
-				if @comparitor.call(@queue[pointer], @queue[pointer << 1]) > 0 && 
-					@comparitor.call(@queue[pointer << 1], @queue[(pointer << 1) + 1]) > 0 then
+				if compare(pointer, pointer << 1) < 0 && compare(pointer << 1, (pointer << 1) + 1) > 0 then
 					swap(pointer, pointer << 1)
 					pointer = pointer << 1
-				elsif @comparitor.call(@queue[pointer], @queue[pointer << 1]) > 0 && 
-					@comparitor.call(@queue[pointer << 1], @queue[(pointer << 1) + 1]) < 0 then
+				elsif compare(pointer, pointer << 1) < 0 && compare(pointer << 1, (pointer << 1) + 1) <= 0 then
 					swap(pointer, (pointer << 1) + 1)
 					pointer = (pointer << 1 + 1)
 				else
@@ -69,6 +68,10 @@ class PriorityQueue
 			end
 		end
 		return
+	end
+	
+	def compare(pointer1, pointer2)
+		return @comparitor.call(@queue[pointer1], @queue[pointer2])
 	end
 	
 	def swap(pointer1, pointer2)
