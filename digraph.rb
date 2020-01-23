@@ -59,24 +59,26 @@ class DijkstraSP
 		@pathTo = [-1] * graph.size
 		@distTo[source] = 0
 		@pathTo[source] = source
-		queue = PriorityQueue.new(Proc.new { |x, y| @distTo[y] <=> @distTo[x] })
-		queue.insert(source)
+		queue = PriorityQueue.new(Proc.new { |x, y| y[1] <=> x[1] })
+		queue.insert([source, 0])
 		node = nil
 		while queue.size > 0 do
 			while node = queue.delMax
-				if !(@visited[node]) then break end
+p node
+				if !(@visited[node[0]]) then break end
 			end
 			if node then
-				@graph.adj(node).each do |edge|
-					if !(@visited[edge.to]) then
-						queue.insert(edge.to)
+				@graph.adj(node[0]).each do |edge|
+					if @distTo[node[0]] + edge.weight < @distTo[edge.to] then
+						@pathTo[edge.to] = node[0]
+						@distTo[edge.to] = @distTo[node[0]] + edge.weight
 					end
-					if @distTo[node] + edge.weight < @distTo[edge.to] then
-						@pathTo[edge.to] = node
-						@distTo[edge.to] = @distTo[node] + edge.weight
+					
+					if !(@visited[edge.to]) then
+						queue.insert([edge.to, edge.weight + @distTo[edge.from]])
 					end
 				end
-				@visited[node] = true
+				@visited[node[0]] = true
 			end
 		end
 	end
@@ -109,5 +111,4 @@ class BellmanFordSP
 	
 	attr_reader :distTo, :pathTo
 end
-
 
