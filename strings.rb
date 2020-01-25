@@ -46,3 +46,51 @@ class KMP
 	
 end
 
+class BoyerMoore
+	def initialize(pattern)
+		@pattern = pattern
+		@bcAry = Array.new(256) { -1 }
+		pattern.length.times { |i| @bcAry[pattern[i].ord] = i }
+	end
+	
+	def search(string)
+		i = 0
+		while (i <= (string.length - @pattern.length)) do
+			j = @pattern.length - 1
+			while ((j > 0) && (@pattern[j] == string[i + j]))
+				j -= 1
+			end
+			if (j == 0) then
+				return i
+			else
+				jump = j - @bcAry[string[i + j].ord]
+				i += (jump > 1 ? jump : 1)
+			end
+		end
+		
+		return nil
+	end
+	
+	def searchAll(string)
+		out = []
+		i = 0
+		while (i <= (string.length - @pattern.length)) do
+		p i
+			j = @pattern.length - 1
+			while ((j > 0) && (@pattern[j] == string[i + j]))
+				j -= 1
+			end
+			if (j == 0) then
+				out.push(i)
+				i += 1
+			else
+				jump = j - @bcAry[string[i + j].ord]
+				i += (jump > 1 ? jump : 1)
+			end
+		end
+		
+		return out
+	end
+	
+	
+end
